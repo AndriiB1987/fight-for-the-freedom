@@ -1,0 +1,37 @@
+{
+  "__version__": "1.0.6",
+  "general": {
+    "designResolution": {
+      "width": 1920,
+      "height": 2880
+    }
+  },
+  "physics": {
+    "collisionGroups": [
+      {
+        "index": 1,
+        "name": "enemy0"
+      },
+      {
+        "index": 2,
+        "name": "enemy1"
+      },
+      {
+        "index": 3,
+        "name": "enemy2"
+      },
+      {
+        "index": 4,
+        "name": "playerBullet"
+      }
+    ],
+    "collisionMatrix": {
+      "0": 1,
+      "1": 16,
+      "2": 16,
+      "3": 16,
+      "4": 14
+    }
+  },
+  "custom_joint_texture_layouts": []
+}
