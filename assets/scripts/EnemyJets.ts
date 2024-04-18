@@ -55,9 +55,9 @@ export class EnemyJets extends Component {
       .repeatForever()
     .start() 
     // console.log("randomX  - "+this.ranX)
-    // this.randomValue();
+    this.randomValue();
     tween(this.node)
-    // .to(this.tweenDuration, { position: new Vec3(  this.ranX-900, 1800) } )
+    .to(this.tweenDuration, { position: new Vec3(  this.ranX-900, 1800) } )
     .repeatForever( moveLeft)  // Repeat the 'embedTween'
     .start() 
     

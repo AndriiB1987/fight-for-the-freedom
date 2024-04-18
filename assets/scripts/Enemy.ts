@@ -14,8 +14,9 @@ export class Enemy {
         }
     
         // Method to activate the enemy
-        public activate() {
+        public activate(parentNode: Node) {
             this.node.active = true;
+            this.node.setParent(parentNode); // Set the parent node
             this.active = true;
         }
     

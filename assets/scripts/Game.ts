@@ -1,14 +1,16 @@
 import { _decorator, Component, director, game, Node,view, PhysicsSystem, Collider2D, Contact2DType, IPhysics2DContact, find, Prefab, input, Input, instantiate, macro, Vec3, EventKeyboard, KeyCode, Canvas, UITransform, NodePool, random } from 'cc';
 import { PlayersJet } from './PlayersJet';
-import { MoveBullet } from './MoveBullet';
+import { Enemy } from './Enemy';
 
 
 const { ccclass, property } = _decorator;
 
 @ccclass('Game')
 export class Game extends Component {
-  private canvas: HTMLCanvasElement | null;
-
+  private canvas: Node; // Reference to the canvas node
+  public enemyPrefabs: Prefab[] = []; // Reference to the enemy prefabs
+  public enemyPools: Enemy[][] = []; // Pools of enemy objects for each type
+  public enemyObj:Enemy = null; 
   @property(Prefab)
   enemy0Pref:Prefab = null;
   @property(Prefab)
@@ -20,8 +22,10 @@ export class Game extends Component {
   public createEnemy1:Node = null;  
   public createEnemy2:Node = null;
 
-  public poolShips:Node = null;
+  public enemyObjStart:Node = null;
   public poolShipsNew:Node = null;
+  
+  public enemyToSpown:Enemy = null;
 
   public colliderEnemy0:Collider2D;
   public colliderEnemy1:Collider2D;
@@ -51,79 +55,83 @@ createPlayersBullet(){
   // this.bulletQueue.addPool();
 }
 
-// createEnemys(){
-//   this.addPoolOfEnemy()
-//   // this.bulletQueue.addPool();
-// }
 destroyPlayersBullet(){
   this.jet.destroyPlayerBullets();
   // this.bulletQueue.destroyPlayerBullets();
 }
 
-initPoolOfEnemy(){
 
-  let initCount = 3;
-
-  //fill up the node pool
-  let poolShips = [this.createEnemy0,this.createEnemy1,this.createEnemy2]
-  let random = Math.floor(Math.random()*poolShips.length)
-  
-  for (let i = 0; i < initCount; i++) {
-      // create the new node
-      this.poolShipsNew = poolShips[random]
-      if (i == 0) {
-          this.node.parent.addChild(this.poolShipsNew);
-      } else {
-          //put others into the nodePool
-          this.poolOfEnemy.put(this.poolShipsNew);
+initEnemy() {
+  // Preload enemy objects into the pools
+  this.enemyPrefabs = [this.enemy0Pref,this.enemy1Pref,this.enemy2Pref]
+  for (let i = 0; i < this.enemyPrefabs.length; i++) {
+      const enemyPool: Enemy[] = [];
+      for (let j = 0; j < 10; j++) {
+        this.enemyObjStart = instantiate(this.enemyPrefabs[i]);
+          this.enemyObj = new Enemy(this.enemyObjStart, i);
+          enemyPool.push(this.enemyObj);
       }
+    //  console.log("To DETECT obj - "+ this.enemyObj.node.name)
+    //  //const objName =  this.enemyObj.node.name;
+    //  if(this.enemyObj.node.name =='enemy0'){
+    //   console.log("    0  - "+ this.enemyObj.node.name)
+    //   console.log("    0  - "+ this.enemyObjStart.name)
+    //   this.colliderEnemy0 = this.enemyObjStart.getComponent(Collider2D);
+    //  }
+    //  if(this.enemyObj.node.name =='enemy1'){
+    //   console.log("    1  - "+ this.enemyObj.node.name)
+    //   this.colliderEnemy1 = this.enemyObjStart.getComponent(Collider2D);
+    //  }
+    //  if(this.enemyObj.node.name =='enemy2'){
+    //   console.log("    2  - "+ this.enemyObj.node.name)
+    //   this.colliderEnemy2 = this.enemyObjStart.getComponent(Collider2D);
+    //  }
+      this.enemyPools.push(enemyPool);
   }
-  // let dd = this.poolOfEnemy.get()
-  // console.log(" elm 0 -" + dd)
+
+ 
 }
 
-addPoolOfEnemy() {
-  // let ships = [this.createEnemy0,this.createEnemy1,this.createEnemy2]
-  // let random = Math.floor(Math.random()*ships.length)
-  // let newShip = ships[random]
-  //if the pool is not full add a new one, else get the first one in the pool
-  if (this.poolOfEnemy.size() > 0) {
-      //get from the pool
-      // this.createEnemyNode = this.poolOfEnemy.get();
-      this.createEnemyNode = this.poolOfEnemy.get();
-  } else {
-      //build a new one
-      this.createEnemyNode = this.poolShipsNew;
-  }
-  //this.createEnemyNode.setPosition(this.node.position.x,this.node.position.y)
-  this.node.parent.addChild(this.createEnemyNode);
-  console.log(" NODE   -- -- -- " + this.createEnemyNode)     
-}
-randomValue(){
-  const uiTransform = 1700;
-  let randomX = Math.random() * uiTransform;
-  this.ranX = randomX;
-}
-initAllForStart(){  
-  this.createEnemy0 = instantiate(this.enemy0Pref)
-  this.createEnemy1 = instantiate(this.enemy1Pref)
-  this.createEnemy2 = instantiate(this.enemy2Pref)
-  this.colliderEnemy0 = this.createEnemy0.getComponent(Collider2D);
-  this.colliderEnemy1 = this.createEnemy1.getComponent(Collider2D);
-  this.colliderEnemy2 = this.createEnemy2.getComponent(Collider2D);
+public spawnEnemy() {
+  // Randomly select an enemy type
+  const type = Math.floor(Math.random() * this.enemyPrefabs.length);
 
-}
-spawnShips(numShips: number, jetXCoordinate:number){
-  let ships = [this.createEnemy0,this.createEnemy1,this.createEnemy2]
-  for (let i = 0; i < numShips; i++) {
-    let random = Math.floor(Math.random()*ships.length)
-    let newShip =ships[random]
-     newShip.setPosition(jetXCoordinate-900,1800)
-    this.node.parent.addChild(newShip)
+  // Check if there's an inactive enemy of the selected type in the pool
+  const inactiveEnemy = this.enemyPools[type].find(enemy => !enemy.active);
+
+  // If there's no inactive enemy, expand the pool
+  if (!inactiveEnemy) {
+      const enemyNode = instantiate(this.enemyPrefabs[type]);
+      const enemy = new Enemy(enemyNode, type);
+      this.enemyPools[type].push(enemy);
   }
-    //  this.addPoolOfEnemy()
-    console.log("Enemy  Created with arr")
-    }
+
+  // Activate the first inactive enemy found or the newly created enemy
+  this.enemyToSpown = inactiveEnemy || this.enemyPools[type][this.enemyPools[type].length - 1];
+  console.log("To DETECT obj - "+ this.enemyObj.node.name)
+  //const objName =  this.enemyObj.node.name;
+  if(this.enemyToSpown.node.name =='enemy0'){
+   console.log("    0  - "+ this.enemyToSpown.node.name)
+   console.log("    0  - "+ this.enemyToSpown.type)
+   this.colliderEnemy0 = this.enemyToSpown.node.getComponent(Collider2D);
+  }
+  if(this.enemyToSpown.node.name =='enemy1'){
+    console.log("    1  - "+ this.enemyToSpown.node.name)
+    console.log("    1  - "+ this.enemyToSpown.type)
+    this.colliderEnemy1 = this.enemyToSpown.node.getComponent(Collider2D);
+   }
+   if(this.enemyToSpown.node.name =='enemy2'){
+    console.log("    2  - "+ this.enemyToSpown.node.name)
+    console.log("    2  - "+ this.enemyToSpown.type)
+    this.colliderEnemy2 = this.enemyToSpown.node.getComponent(Collider2D);
+   }
+   this.enemyToSpown.activate(this.canvas);
+}
+public onEnemyDefeated(enemy: Enemy) {
+  enemy.deactivate(); // Deactivate the defeated enemy
+  enemy.destroy(); // Destroy the enemy node
+  // Handle enemy defeat logic (e.g., award points, play animations)
+}
 
     contactEnemy() {
       console.log("    <<<<     contact  ENEMY  for ALL>>>>>   ")
@@ -141,36 +149,50 @@ onBeginContactEnemy0(selfCollider: Collider2D, otherCollider: Collider2D, contac
   if(this.colliderEnemy0){
        this.enemyHitSomething0 = true; 
   } 
+  if (contact) {
+    console.log('Contact object:', contact);
+    // Your collision handling code here
+} else {
+    console.warn('Null contact object encountered.');
 }
-
-// onEndContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
-//   // will be called once when the contact between two colliders just about to end.
-//   console.log('onEndContact');
-// }
+}
 
 onBeginContactEnemy1(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
   if(this.colliderEnemy1){
     this.enemyHitSomething1 = true;   
     // console.log("1 boolen - " +this.enemyHitSomething1 )  
   } 
+  if (contact) {
+    console.log('Contact object:', contact);
+    // Your collision handling code here
+} else {
+    console.warn('Null contact object encountered.');
+}
 }
 onBeginContactEnemy2(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
   if(this.colliderEnemy2){
   this.enemyHitSomething2 = true;  
   } 
+  if (contact) {
+    console.log('Contact object:', contact);
+    // Your collision handling code here
+} else {
+    console.warn('Null contact object encountered.');
+}
 }
 enemyStruck() {
+  this.contactEnemy();
       if (this.enemyHitSomething0 == true)
       {
         console.log("0                    <<<<    Enemy 0 Should be destroyed >>>>>")
 
         // this.createEnemyNode.destroy()
         // this.createEnemy0.destroy();
-        this.createEnemy0.parent.removeChild(this.createEnemy0);
+        // this.createEnemy0.parent.removeChild(this.createEnemy0);
+        this.onEnemyDefeated(this.enemyToSpown)
 
         this.destroyPlayersBullet()
-        this.randomValue()
-        this.spawnShips(1, this.ranX);
+        // this.spawnShips();
         this.enemyHitSomething0 = false;
 
       }
@@ -178,11 +200,10 @@ enemyStruck() {
         {
           console.log("1                    <<<<    Enemy 1 Should be destroyed >>>>>")
           // this.createEnemy1.destroy();
-          this.createEnemy1.parent.removeChild(this.createEnemy1);
+          this.onEnemyDefeated(this.enemyToSpown)
           // this.createEnemyNode.destroy()
           this.destroyPlayersBullet()
-          this.randomValue()
-          this.spawnShips(1, this.ranX);
+          // this.spawnShips();
           this.enemyHitSomething1 = false;
           
         }  
@@ -190,39 +211,26 @@ enemyStruck() {
           {
             console.log("2                    <<<<    Enemy 2 Should be destroyed >>>>>")
             // this.createEnemy2.destroy()
-            this.createEnemy2.parent.removeChild(this.createEnemy2);
+            this.onEnemyDefeated(this.enemyToSpown)
             // this.createEnemyNode.destroy()
             this.destroyPlayersBullet()
-            this.randomValue()
-            this.spawnShips(1, this.ranX);
+            // this.spawnShips();
             this.enemyHitSomething2 = false;
           }         
     }
 
 start() {
-
   this.contactEnemy();
-  this.randomValue()
-  this.spawnShips(2, this.ranX);
-
-  console.log("Script started by /start()/ ");
+   // Start spawning enemies
+   this.schedule(this.spawnEnemy, 3); // Spawn an enemy every second
+  console.log("  2                   /start()/ ");
 }
 onLoad() {
-  
-  // /this.jet.initPool()
-  
-  this.initAllForStart()
-  // this.schedule(this.spawnShips(1, this.ranX), this.apearEnemyFrequency, macro.REPEAT_FOREVER, 3.0);
-  //this.initPoolOfEnemy()
-  // this.bulletSpeedGame = this.bul.BulletSpeed
-
-
-  console.log("onLoad was passed by /onLoad()/ ");
-
+  console.log("  1                   /onLoad()/ ");
+  this.initEnemy()
+  this.canvas = find('Canvas'); // Find the canvas node
     }
-    destroyBylletIfOutOfCanvas(){
 
-    }
 update(dt){
   if (this.jet.bulletShouted === true && this.isButtonPressed === false) {      
           this.createPlayersBullet();
@@ -232,15 +240,6 @@ update(dt){
           this.isButtonPressed = false;
       }
       this.enemyStruck()
-      // this.schedule(this.spawnShips, 3);
-      // const scene = director.getScene();
-      // const canvas = scene.getComponentInChildren(Canvas);
-      // const currentPosition = this.node.position;
-      // const newY = currentPosition.y - (this.bulletSpeedGame * dt);
-      // this.node.setPosition(this.node.position.x,newY);   
-      // if(this.node.position.y <= -(canvas.getComponent(UITransform).height)){
-      //   this.destroyPlayersBullet()
-      // }
     }
 }
 
