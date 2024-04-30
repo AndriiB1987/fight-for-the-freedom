@@ -13,7 +13,7 @@ export class Results extends Component {
     updateScore(num:number){
         this.countingEnemys = num
         this.countingLabel.string = (' ' + this.countingEnemys)
-        console.log("added +1 destroyed enemy")
+        // console.log("added +1 destroyed enemy")
     }
 
     resetScore(){

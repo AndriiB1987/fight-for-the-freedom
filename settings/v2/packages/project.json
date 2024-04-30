@@ -23,14 +23,24 @@
       {
         "index": 4,
         "name": "playerBullet"
+      },
+      {
+        "index": 5,
+        "name": "player"
+      },
+      {
+        "index": 6,
+        "name": "enemyBullet"
       }
     ],
     "collisionMatrix": {
       "0": 1,
-      "1": 16,
-      "2": 16,
-      "3": 16,
-      "4": 14
+      "1": 48,
+      "2": 48,
+      "3": 48,
+      "4": 14,
+      "5": 78,
+      "6": 32
     }
   },
   "custom_joint_texture_layouts": []
