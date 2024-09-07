@@ -9,7 +9,7 @@ export class Game extends Component {
     type:Results,
     tooltip: 'Enemys destroyed'
   })
-  public amount:Results
+  public amount:Results;
   public enemyPrefabs: Prefab[] = []; // Reference to the enemy prefabs
   @property(Prefab)
   enemy0Pref:Prefab = null;
@@ -45,6 +45,7 @@ export class Game extends Component {
   public poolOfEnemy = new NodePool;
   public createEnemyNode:Node = null;  
   public apearEnemyFrequency:number = 3.0;
+  public amountOfMassels:number;
 
 createPlayersBullet(){
   this.jet.addPool()
@@ -146,30 +147,33 @@ enemyStruck() {
       {
         console.log("0                    <<<<    Enemy 0 Should be destroyed >>>>>")
         this.createEnemy0.active = false
-        this.amount.addScore()
+        this.amount.addScoreDestroyedEnemy()
         this.spawnEnemy(this.createEnemy0)
         console.log("Created for 0 - "+this.createEnemy0.name)
         this.destroyPlayersBullet()
         this.enemyHitSomething0 = false;
+        this.amount.scoreTotalEnemy();
       }
       if (this.enemyHitSomething1 == true)
         {
           console.log("1                    <<<<    Enemy 1 Should be destroyed >>>>>")
           this.createEnemy1.active = false
-          this.amount.addScore()
+          this.amount.addScoreDestroyedEnemy()
           this.spawnEnemy(this.createEnemy1)
           console.log("Created for 1 - "+this.createEnemy1.name)       
           this.destroyPlayersBullet()
           this.enemyHitSomething1 = false;
+          this.amount.scoreTotalEnemy();
         }  
         if (this.enemyHitSomething2 == true)
           {
             console.log("2                    <<<<    Enemy 2 Should be destroyed >>>>>")
             this.createEnemy2.active = false
-            this.amount.addScore()
+            this.amount.addScoreDestroyedEnemy()
             this.spawnEnemy(this.createEnemy2)
             this.destroyPlayersBullet()
             this.enemyHitSomething2 = false;
+            this.amount.scoreTotalEnemy();
           }         
           if (this.playerHitSomething == true)
             {
@@ -188,21 +192,22 @@ start() {
 onLoad() {
   this.initEnemy()
   // this.canvas = find('Canvas'); // Find the canvas node
-  this.amount.updateScore(0)
+  this.amount.resetScores()
     }
 
 update(dt){
   if (this.jet.bulletShouted === true && this.isButtonPressed === false) {      
           this.createPlayersBullet();
           this.isButtonPressed = true;
+          this.amount.scoreTotalMissiles();
         } else if (this.jet.bulletShouted === false) {
           // Reset the button press state when the button is released
           this.isButtonPressed = false;
       }
+      if(this.amount.missilesShouted<=0){
+        director.loadScene('Menu');
+      }
       this.enemyStruck()
     }
-}
 
-
-
-
+  }
