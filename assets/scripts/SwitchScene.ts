@@ -20,6 +20,7 @@ export class switchScene extends Component {
         // document.addEventListener('keydown', this.onInteraction.bind(this));
 
         
+
         director.preloadScene('Game');
     }
 

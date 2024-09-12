@@ -4,6 +4,12 @@
 
   /* Add your custom configuration here. */
   "compilerOptions": {
-    "strict": false
+    "target": "es2016",
+    "lib": ["dom", "es2016"],
+    "module": "commonjs",
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   }
 }

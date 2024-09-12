@@ -1,6 +1,7 @@
-import { _decorator, Component, director, game, Node,view, PhysicsSystem, Collider2D, Contact2DType, IPhysics2DContact, find, Prefab, input, Input, instantiate, macro, Vec3, EventKeyboard, KeyCode, Canvas, UITransform, NodePool, random,screen } from 'cc';
+import { _decorator, Component, director, game, Node,view, PhysicsSystem, Collider2D, Contact2DType, IPhysics2DContact, find, Prefab, input, Input, instantiate, macro, Vec3, EventKeyboard, KeyCode, Canvas, UITransform, NodePool, random,screen,sp } from 'cc';
 import { PlayersJet } from './PlayersJet';
 import { Results } from './Results';
+import {switchScene} from "./SwitchScenePopupToMenu";
 const { ccclass, property } = _decorator;
 
 @ccclass('Game')
@@ -46,6 +47,7 @@ export class Game extends Component {
   public createEnemyNode:Node = null;  
   public apearEnemyFrequency:number = 3.0;
   public amountOfMassels:number;
+  public switchScene:switchScene;
 
 createPlayersBullet(){
   this.jet.addPool()
@@ -190,6 +192,8 @@ start() {
   this.contactEnemy();
 }
 onLoad() {
+  
+  director.preloadScene('Dialog');
   this.initEnemy()
   // this.canvas = find('Canvas'); // Find the canvas node
   this.amount.resetScores()
@@ -204,9 +208,10 @@ update(dt){
           // Reset the button press state when the button is released
           this.isButtonPressed = false;
       }
-      if(this.amount.missilesShouted<=0){
-        director.loadScene('Menu');
-      }
+      if (this.amount.missilesShouted <= 22) {
+        director.loadScene('Dialog');
+    }
+      
       this.enemyStruck()
     }
 
