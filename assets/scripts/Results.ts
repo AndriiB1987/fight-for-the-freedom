@@ -1,5 +1,6 @@
 import { _decorator, Component, Label, Node } from 'cc';
 const { ccclass, property } = _decorator;
+import { PersistentNode } from './PersistentNode';
 
 @ccclass('Results')
 export class Results extends Component {
@@ -25,6 +26,7 @@ export class Results extends Component {
     countOfTotalEnemy: number=20;
     countOfTotalMissiles: number=23
     missilesShouted:number;
+    enemyPlaneCrasched:number=0;
     // commonLabale:Label;
     updateScore( comLab:Label,num:number,){
         this.count = num
@@ -38,10 +40,16 @@ export class Results extends Component {
      this.updateScore(this.totalEnemysLabel,0)
      this.updateScore(this.countingLabel,0)
      this.updateScore(this.missilesLabel,0)
+     this.enemyPlaneCrasched = 0;
+     PersistentNode.instance.amount.enemyPlaneCrasched =0;
+     PersistentNode.instance.amount.missilesShouted =23;
+     PersistentNode.instance.amount.playerDestroyed = false;
+     PersistentNode.instance.amount.playerOutOfCanvase = false;
 
     }
     addScoreDestroyedEnemy(){
         this.updateScore(this.countingLabel, this.count+1)
+        this.enemyPlaneCrasched =this.enemyPlaneCrasched+1; 
     }
 
     scoreTotalEnemy(){

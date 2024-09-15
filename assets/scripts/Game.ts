@@ -2,6 +2,7 @@ import { _decorator, Component, director, game, Node,view, PhysicsSystem, Collid
 import { PlayersJet } from './PlayersJet';
 import { Results } from './Results';
 import {switchScene} from "./SwitchScenePopupToMenu";
+import { PersistentNode } from './PersistentNode';
 const { ccclass, property } = _decorator;
 
 @ccclass('Game')
@@ -181,8 +182,12 @@ enemyStruck() {
             {
               console.log("2                    <<<<    PLAYER Should be destroyed >>>>>")
               this.jet.destroy()
+              if (this.playerHitSomething == true){
+                PersistentNode.instance.amount.playerDestroyed = true;
+                director.loadScene('Dialog');
+              }
               this.playerHitSomething = false;
-              director.loadScene('Menu');
+              // director.loadScene('Menu');
             }   
     }
 start() {
@@ -208,8 +213,15 @@ update(dt){
           // Reset the button press state when the button is released
           this.isButtonPressed = false;
       }
-      if (this.amount.missilesShouted <= 22) {
+      if (this.amount.missilesShouted <= 21) {
+        PersistentNode.instance.amount.missilesShouted = this.amount.missilesShouted;
         director.loadScene('Dialog');
+
+
+    }
+    if (this.amount.enemyPlaneCrasched >= 1) {
+      PersistentNode.instance.amount.enemyPlaneCrasched = this.amount.enemyPlaneCrasched;
+      director.loadScene('Dialog');
     }
       
       this.enemyStruck()

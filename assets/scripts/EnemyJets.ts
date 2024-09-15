@@ -2,6 +2,7 @@ import { _decorator, Canvas, Collider2D, Component, Contact2DType, director, ins
 import { MoveBullet } from './MoveBullet';
 import { PlayersJet } from './PlayersJet';
 import { GetCanvas } from './GetCanvas';
+import { PersistentNode } from './PersistentNode';
 const { ccclass, property } = _decorator;
 
 @ccclass('EnemyJets')
@@ -19,6 +20,7 @@ export class EnemyJets extends Component {
     @property
     moveAmountY:number = 20;
     public hitYelowBullet:boolean;
+    public playerOutOfCanvase:boolean;
     public yellowB:MoveBullet;
     public jet:PlayersJet;
     public ranX:number;
@@ -26,6 +28,7 @@ export class EnemyJets extends Component {
     public myCanvas:GetCanvas;
     start(){
         this.randomValue();
+        this.playerOutOfCanvase = false;
     }
 
     randomValue(){
@@ -66,7 +69,12 @@ export class EnemyJets extends Component {
         const canvas = scene.getComponentInChildren(Canvas);
         if(this.node.position.y <= -(canvas.getComponent(UITransform).height -1400)){
             console.log("Plane out of CANVAS")
-            director.loadScene('Menu');
+            this.playerOutOfCanvase = true;
+            if(this.playerOutOfCanvase == true){
+                PersistentNode.instance.amount.playerOutOfCanvase = true;
+            }
+            
+            director.loadScene('Dialog');
         }
     }
 }
