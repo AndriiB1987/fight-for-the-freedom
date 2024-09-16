@@ -38,7 +38,7 @@ export class GameController extends Component {
                 // Play 'idle' animation after 'show' finishes
                 this.animationManager.playSpineAnimation('idle', true);
 
-                if( PersistentNode.instance.amount.missilesShouted<=21){
+                if( PersistentNode.instance.amount.missilesShouted<=0){
                     this.typeText("You lost! You have run out of missiles!", 100);
                 }
                 if( PersistentNode.instance.amount.playerDestroyed==true){
@@ -48,7 +48,7 @@ export class GameController extends Component {
                      this.typeText("You lost! One of the enemies flew past you...", 100);
                 }
 
-                if( PersistentNode.instance.amount.enemyPlaneCrasched>=1){
+                if( PersistentNode.instance.amount.enemyPlaneCrasched>=20){
                      this.typeText("You win! All enemies are destroyed!", 100);
                 }
             });
