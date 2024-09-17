@@ -8,7 +8,11 @@ const { ccclass, property } = _decorator;
 @ccclass('Game')
 export class Game extends Component {
   @property(Animation)
-  cocosAnim: Animation | null = null;
+  cocosAnim_0: Animation | null = null;
+  @property(Animation)
+  cocosAnim_1: Animation | null = null;
+  @property(Animation)
+  cocosAnim_2: Animation | null = null;
   @property({
     type:Results,
     tooltip: 'Enemys destroyed'
@@ -53,13 +57,13 @@ export class Game extends Component {
   public switchScene:switchScene;
 
     // Function to play the animation and register a callback
-    playAnimationWithCallback(clipName: string, callback: Function) {
-      if (this.cocosAnim) {
+    playAnimationWithCallback(clipName: string, anim:Animation, callback: Function) {
+      if (anim) {
           // Play the animation
-          this.cocosAnim.play(clipName);
+          anim.play(clipName);
 
           // Register the callback for the 'finished' event
-          this.cocosAnim.once(Animation.EventType.FINISHED, () => {
+          anim.once(Animation.EventType.FINISHED, () => {
               callback(); // Call the provided callback function
           });
       } else {
@@ -145,7 +149,7 @@ onBeginContactEnemy0(selfCollider: Collider2D, otherCollider: Collider2D, contac
   console.log('HERE 0');
   this.enemyHitSomething0 = true; 
   if(this.colliderEnemy0){
-    this.playAnimationWithCallback('expl', () => {
+    this.playAnimationWithCallback('expl', this.cocosAnim_0, () => {
       console.log('ANIM EXPL FINISCHED');
     });
        
@@ -155,12 +159,18 @@ onBeginContactEnemy0(selfCollider: Collider2D, otherCollider: Collider2D, contac
 onBeginContactEnemy1(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
   console.log('HERE 1');
   if(this.colliderEnemy1){
+    this.playAnimationWithCallback('expl', this.cocosAnim_1, () => {
+      console.log('ANIM EXPL FINISCHED');
+    });
     this.enemyHitSomething1 = true;   
   }
 }
 onBeginContactEnemy2(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
   console.log('HERE 2');
   if(this.colliderPlayer){
+    this.playAnimationWithCallback('expl', this.cocosAnim_2, () => {
+      console.log('ANIM EXPL FINISCHED');
+    });
   this.enemyHitSomething2 = true;
 }
 
@@ -174,44 +184,42 @@ enemyStruck() {
   this.contactEnemy();
       if (this.enemyHitSomething0 == true)
       {
-        // this.playAnimationWithCallback('expl', () => {
+
           this.createEnemy0.active = false
-          
           this.amount.addScoreDestroyedEnemy()
           this.destroyPlayersBullet()
           this.enemyHitSomething0 = false;
           this.amount.scoreTotalEnemy();
-          setTimeout(() => {
-            
-
-            this.createEnemy.destroy();
+          setTimeout(() => {         
+            this.createEnemy0.destroy();
             this.spawnEnemy(this.createEnemy0)
         }, 300);
-
-          
-      // });
 
       }
       if (this.enemyHitSomething1 == true)
         {
-          console.log("1                    <<<<    Enemy 1 Should be destroyed >>>>>")
           this.createEnemy1.active = false
           this.amount.addScoreDestroyedEnemy()
-          this.spawnEnemy(this.createEnemy1)
-          console.log("Created for 1 - "+this.createEnemy1.name)       
           this.destroyPlayersBullet()
           this.enemyHitSomething1 = false;
           this.amount.scoreTotalEnemy();
-        }  
+          setTimeout(() => {
+            this.createEnemy1.destroy();
+            this.spawnEnemy(this.createEnemy1)
+        }, 300);
+        
+      }  
         if (this.enemyHitSomething2 == true)
           {
-            console.log("2                    <<<<    Enemy 2 Should be destroyed >>>>>")
             this.createEnemy2.active = false
             this.amount.addScoreDestroyedEnemy()
-            this.spawnEnemy(this.createEnemy2)
             this.destroyPlayersBullet()
             this.enemyHitSomething2 = false;
             this.amount.scoreTotalEnemy();
+            setTimeout(() => {
+              this.createEnemy2.destroy();
+              this.spawnEnemy(this.createEnemy2)
+          }, 300);
           }         
           if (this.playerHitSomething == true)
             {
