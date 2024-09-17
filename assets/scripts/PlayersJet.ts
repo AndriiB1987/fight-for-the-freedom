@@ -55,7 +55,6 @@ export class PlayersJet extends Component {
     destroyPlayerBullets(){
         this.createBulletNode.destroy();
     }
-    //__________________________________________________________________________________________________________
 
       onLoad() {  
         input.on(Input.EventType.KEY_DOWN,this.moveJet.bind(this));
@@ -72,11 +71,9 @@ export class PlayersJet extends Component {
         switch(event.keyCode){
             case KeyCode.KEY_A:
                 this.moveLeft = 1;
-                console.log('step to Left');
                 break;
             case KeyCode.KEY_D:
                 this.moveRight = 1;
-                console.log('step to Right');
                 break;
         }
     }

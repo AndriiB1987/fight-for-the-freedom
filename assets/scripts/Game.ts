@@ -13,6 +13,8 @@ export class Game extends Component {
   cocosAnim_1: Animation | null = null;
   @property(Animation)
   cocosAnim_2: Animation | null = null;
+  @property(Animation)
+  player: Animation | null = null;
   @property({
     type:Results,
     tooltip: 'Enemys destroyed'
@@ -128,7 +130,6 @@ public spawnEnemy(enemy:Node) {
     }
 
     contactEnemy() {
-      console.log("    <<<<     contact  ENEMY  for ALL>>>>>   ")
          if(this.colliderEnemy0){
           this.colliderEnemy0.on(Contact2DType.BEGIN_CONTACT, this.onBeginContactEnemy0, this);
          }
@@ -146,38 +147,37 @@ public spawnEnemy(enemy:Node) {
          }
       }
 onBeginContactEnemy0(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
-  console.log('HERE 0');
   this.enemyHitSomething0 = true; 
   if(this.colliderEnemy0){
     this.playAnimationWithCallback('expl', this.cocosAnim_0, () => {
-      console.log('ANIM EXPL FINISCHED');
+      console.log('For SOUND');
     });
        
 }
 }
 
 onBeginContactEnemy1(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
-  console.log('HERE 1');
   if(this.colliderEnemy1){
     this.playAnimationWithCallback('expl', this.cocosAnim_1, () => {
-      console.log('ANIM EXPL FINISCHED');
+      console.log('For SOUND');
     });
     this.enemyHitSomething1 = true;   
   }
 }
 onBeginContactEnemy2(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
-  console.log('HERE 2');
   if(this.colliderPlayer){
     this.playAnimationWithCallback('expl', this.cocosAnim_2, () => {
-      console.log('ANIM EXPL FINISCHED');
+      console.log('For SOUND');
     });
   this.enemyHitSomething2 = true;
 }
 
 }
 onBeginContactPlayer(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
-  console.log('PLAYER HERE');
   if(this.colliderPlayer){
+    this.playAnimationWithCallback('expl', this.player, () => {
+      console.log('For SOUND');
+    });
   this.playerHitSomething = true;
 }}
 enemyStruck() {
@@ -223,16 +223,18 @@ enemyStruck() {
           }         
           if (this.playerHitSomething == true)
             {
-              console.log("2                    <<<<    PLAYER Should be destroyed >>>>>")
-              this.jet.destroy()
-              if (this.playerHitSomething == true){
-                PersistentNode.instance.amount.playerDestroyed = true;
-                director.loadScene('Dialog');
-              }
-              this.playerHitSomething = false;
-              // director.loadScene('Menu');
-            }   
+              this.jet.node.active = false;
+
+              setTimeout(() => {
+                if (this.playerHitSomething == true){
+                  PersistentNode.instance.amount.playerDestroyed = true;
+                  director.loadScene('Dialog');
+                }
+                this.playerHitSomething = false;
+            }, 300);
+          }   
     }
+
 start() {
   this.spawnEnemy(this.createEnemy0)
   this.spawnEnemy(this.createEnemy1)
@@ -243,7 +245,6 @@ onLoad() {
   
   director.preloadScene('Dialog');
   this.initEnemy()
-  // this.canvas = find('Canvas'); // Find the canvas node
   this.amount.resetScores()
     }
 
@@ -259,15 +260,13 @@ update(dt){
       if (this.amount.missilesShouted <= 0) {
         PersistentNode.instance.amount.missilesShouted = this.amount.missilesShouted;
         director.loadScene('Dialog');
-
-
     }
     if (this.amount.enemyPlaneCrasched >= 20) {
       PersistentNode.instance.amount.enemyPlaneCrasched = this.amount.enemyPlaneCrasched;
-      director.loadScene('Dialog');
+      setTimeout(() => {
+        director.loadScene('Dialog');
+    }, 300);
     }
-      
       this.enemyStruck()
     }
-
   }
