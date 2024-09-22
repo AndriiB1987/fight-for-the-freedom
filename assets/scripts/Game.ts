@@ -116,11 +116,13 @@ public spawnEnemy(enemy:Node) {
         enemy = this.createEnemy
         this.createEnemy0.active = true
         this.node.parent.addChild(enemy);
+        // this.createEnemy0.zIndex = 0
        }
        if(this.createEnemy.name =='enemy1'){
         this.createEnemy1 = this.createEnemy
         this.colliderEnemy1 = this.createEnemy1.getComponent(Collider2D);
         enemy = this.createEnemy
+        enemy.setSiblingIndex(3); 
         this.createEnemy1.active = true
         this.node.parent.addChild(enemy);
        }
@@ -128,6 +130,7 @@ public spawnEnemy(enemy:Node) {
         this.createEnemy2 = this.createEnemy
         this.colliderEnemy2 = this.createEnemy2.getComponent(Collider2D);
         enemy = this.createEnemy
+        enemy.setSiblingIndex(2); 
         this.createEnemy2.active = true
         this.node.parent.addChild(enemy);
        }
