@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.Prefab",
-    "_name": "enemy2",
+    "_name": "enemy1",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_native": "",
@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "enemy2",
+    "_name": "enemy1",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": null,
@@ -94,7 +94,7 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "ed/FEvmtVKTLeJFb+7CYJs"
+    "fileId": "00d2dYRt9EcZ4pA8Tmr9hx"
   },
   {
     "__type__": "cc.Sprite",
@@ -119,7 +119,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "21622fd8-ee45-4b58-86fa-b217a6397ca3@f9941",
+      "__uuid__": "f6b414d6-6ccb-46b8-9565-46e485cdaaf5@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 0,
@@ -139,7 +139,7 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "d14MA3juJCUI8v6q97mFUV"
+    "fileId": "61h3U8HRRNUYbmcvJAjx05"
   },
   {
     "__type__": "cd8b7lApDVGj4wRzsSpNw+t",
@@ -158,14 +158,14 @@
       "__expectedType__": "cc.Prefab"
     },
     "shootFrequency": 3,
-    "duration": 0.5,
-    "moveAmountX": 1.1,
-    "moveAmountY": 20,
+    "duration": 0,
+    "moveAmountX": 0.2,
+    "moveAmountY": 1,
     "_id": ""
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "02pmCg4dVNbqfR3a37rnVG"
+    "fileId": "5dEzThBKlH5ZeWUc/vphjF"
   },
   {
     "__type__": "cc.RigidBody2D",
@@ -199,7 +199,7 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "a96UpEVadOc52Q59l1QMjE"
+    "fileId": "922p7zaNNO9Y+MOS/FilQn"
   },
   {
     "__type__": "cc.PolygonCollider2D",
@@ -214,7 +214,7 @@
       "__id__": 11
     },
     "tag": 0,
-    "_group": 8,
+    "_group": 4,
     "_density": 1,
     "_sensor": false,
     "_friction": 0.2,
@@ -650,7 +650,7 @@
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "98TW0DnnNIwIKTGaMdp5Wp"
+    "fileId": "41vqk/IqdNgahmNMpuXK1s"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -660,7 +660,7 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "a5nF8fJxBHxKF4zwSq5AUa",
+    "fileId": "8aXxH9TQdHJIlWd43xN8Uf",
     "instance": null,
     "targetOverrides": null
   }

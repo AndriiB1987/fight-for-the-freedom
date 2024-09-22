@@ -1,8 +1,14 @@
-import { _decorator, Component, macro, Node, Vec3, director, EventKeyboard, Scene, Prefab, instantiate, Label,KeyCode, Input, input, Collider2D, Contact2DType, IPhysics2DContact, NodePool, UITransform, Canvas,screen  } from 'cc';
+import { _decorator, Component, macro, Node, Vec3, director, EventKeyboard, Scene, Prefab, instantiate, Label,KeyCode, Input, input, Collider2D, Contact2DType, IPhysics2DContact, NodePool, UITransform, Canvas,screen, AudioSource, AudioClip  } from 'cc';
 import { Game } from './Game';
+import { AudioControl } from './AudioController';
 const { ccclass, property } = _decorator;
 @ccclass('PlayersJet')
 export class PlayersJet extends Component {
+    @property(AudioSource)
+    public audioSource: AudioSource | null = null;
+    @property(AudioClip)
+    public clip: AudioClip = null!   
+    public sound: AudioControl = null;  // Drag and drop your AudioSource in the inspector
     public scene = screen.windowSize;
     moveLeft:number =0;
     moveRight:number =0;
@@ -56,7 +62,14 @@ export class PlayersJet extends Component {
         this.createBulletNode.destroy();
     }
 
-      onLoad() {  
+      onLoad() { 
+        if (!this.audioSource) {
+            // Try to get the AudioSource component attached to the same node
+            this.audioSource = this.getComponent(AudioSource);
+        }
+        if (!this.audioSource) {
+            console.error('AudioSource component is missing or not assigned');
+        } 
         input.on(Input.EventType.KEY_DOWN,this.moveJet.bind(this));
         input.on(Input.EventType.KEY_UP, this.stopJet.bind(this));
         input.on(Input.EventType.KEY_DOWN, this.shotBullet.bind(this));
@@ -91,6 +104,12 @@ export class PlayersJet extends Component {
         switch(event.keyCode){
                 case KeyCode.KEY_M:
                 this.bulletShouted = true;
+                if (this.audioSource) {
+                    this.audioSource.playOneShot(this.clip, 1);
+                } else {
+                    console.error('AudioSource is not assigned!');
+                }
+
                 break;
         }
     } 

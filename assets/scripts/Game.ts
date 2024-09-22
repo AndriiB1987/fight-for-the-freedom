@@ -1,4 +1,4 @@
-import { _decorator, Component, director, game, Node,view,Animation, PhysicsSystem, Collider2D, Contact2DType, IPhysics2DContact, find, Prefab, input, Input, instantiate, macro, Vec3, EventKeyboard, KeyCode, Canvas, UITransform, NodePool, random,screen,sp } from 'cc';
+import { _decorator, Component, director, AudioSource, game, Node,view,Animation, PhysicsSystem, Collider2D, Contact2DType, IPhysics2DContact, find, Prefab, input, Input, instantiate, macro, Vec3, EventKeyboard, KeyCode, Canvas, UITransform, NodePool, random,screen,sp, assert } from 'cc';
 import { PlayersJet } from './PlayersJet';
 import { Results } from './Results';
 import {switchScene} from "./SwitchScenePopupToMenu";
@@ -7,6 +7,12 @@ const { ccclass, property } = _decorator;
 
 @ccclass('Game')
 export class Game extends Component {
+  @property(AudioSource)
+  public audioSourceEnemyExpl: AudioSource | null = null;
+  @property(AudioSource)
+  public audioSourcePlayerExpl: AudioSource | null = null;
+  
+  // public sound: AudioControl = null;  // Drag and drop your AudioSource in the inspector
   @property(Animation)
   cocosAnim_0: Animation | null = null;
   @property(Animation)
@@ -58,7 +64,6 @@ export class Game extends Component {
   public amountOfMassels:number;
   public switchScene:switchScene;
 
-    // Function to play the animation and register a callback
     playAnimationWithCallback(clipName: string, anim:Animation, callback: Function) {
       if (anim) {
           // Play the animation
@@ -147,44 +152,42 @@ public spawnEnemy(enemy:Node) {
          }
       }
 onBeginContactEnemy0(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
-  this.enemyHitSomething0 = true; 
+ 
+  const animation = this.node.getComponent(Animation);
   if(this.colliderEnemy0){
     this.playAnimationWithCallback('expl', this.cocosAnim_0, () => {
-      console.log('For SOUND');
+      this.audioSourceEnemyExpl.play();
+  
     });
-       
+    this.enemyHitSomething0 = true; 
 }
 }
 
 onBeginContactEnemy1(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
   if(this.colliderEnemy1){
-    this.playAnimationWithCallback('expl', this.cocosAnim_1, () => {
-      console.log('For SOUND');
-    });
+    this.audioSourceEnemyExpl.play();
+    this.playAnimationWithCallback('expl', this.cocosAnim_1, () => {});
     this.enemyHitSomething1 = true;   
   }
 }
 onBeginContactEnemy2(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
   if(this.colliderPlayer){
-    this.playAnimationWithCallback('expl', this.cocosAnim_2, () => {
-      console.log('For SOUND');
-    });
+    this.audioSourceEnemyExpl.play();
+    this.playAnimationWithCallback('expl', this.cocosAnim_2, () => {});
   this.enemyHitSomething2 = true;
 }
 
 }
 onBeginContactPlayer(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
   if(this.colliderPlayer){
-    this.playAnimationWithCallback('expl', this.player, () => {
-      console.log('For SOUND');
-    });
+    this.audioSourcePlayerExpl.play();
+    this.playAnimationWithCallback('expl', this.player, () => {});
   this.playerHitSomething = true;
 }}
 enemyStruck() {
   this.contactEnemy();
       if (this.enemyHitSomething0 == true)
       {
-
           this.createEnemy0.active = false
           this.amount.addScoreDestroyedEnemy()
           this.destroyPlayersBullet()
@@ -242,10 +245,8 @@ start() {
   this.contactEnemy();
 }
 onLoad() {
-  
   director.preloadScene('Dialog');
   this.initEnemy()
-  this.amount.resetScores()
     }
 
 update(dt){
