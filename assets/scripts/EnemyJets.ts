@@ -54,6 +54,7 @@ export class EnemyJets extends Component {
         this.createYellowBullet = instantiate(this.yellowBullet);
         this.createYellowBullet.setPosition(this.node.position.x,this.node.position.y)
         this.node.parent.addChild( this.createYellowBullet);
+        this.createYellowBullet.setSiblingIndex(2);
     }
   
     onLoad(){

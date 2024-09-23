@@ -52,6 +52,7 @@ export class PlayersJet extends Component {
         }
         this.createBulletNode.setPosition(this.node.position.x,this.node.position.y)
         this.node.parent.addChild(this.createBulletNode);
+        this.createBulletNode.setSiblingIndex(2);
       }
     reset() {
         this.createBulletNode.removeAllChildren();
