@@ -1,11 +1,11 @@
 
 bg.png
-size: 2298,2319
+size: 3513,1702
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 bg
-  rotate: false
+  rotate: true
   xy: 2, 2
   size: 1698, 2315
   orig: 1698, 2315
@@ -13,21 +13,35 @@ bg
   index: -1
 inf_place
   rotate: true
-  xy: 1702, 1113
+  xy: 2917, 496
   size: 1204, 594
   orig: 1204, 594
   offset: 0, 0
   index: -1
-lights_1
+jet
+  rotate: true
+  xy: 2319, 377
+  size: 1323, 596
+  orig: 1323, 596
+  offset: 0, 0
+  index: -1
+light
   rotate: false
-  xy: 1702, 478
+  xy: 2917, 471
+  size: 19, 23
+  orig: 19, 23
+  offset: 0, 0
+  index: -1
+lights_1
+  rotate: true
+  xy: 2319, 2
   size: 373, 633
   orig: 373, 633
   offset: 0, 0
   index: -1
 lights_2
   rotate: false
-  xy: 1702, 11
+  xy: 2954, 29
   size: 354, 465
   orig: 354, 465
   offset: 0, 0
