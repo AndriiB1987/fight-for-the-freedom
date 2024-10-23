@@ -10,7 +10,7 @@ export class BackgroundScroller extends Component {
     background2: Node = null!; // Second background node
     
     @property
-    scrollSpeed: number = 35; // Adjust this to control the speed of the scroll
+    scrollSpeed: number = 20; // Adjust this to control the speed of the scroll
 
     private backgroundHeight: number = 0; // The height of one background image
 
@@ -19,6 +19,7 @@ export class BackgroundScroller extends Component {
         this.backgroundHeight = this.background1.getComponent(UITransform).height;
         this.background1.setSiblingIndex(0);
         this.background2.setSiblingIndex(0);
+        console.log('h  - ' +this.backgroundHeight);
     }
 
     update(deltaTime: number) {
@@ -29,6 +30,8 @@ export class BackgroundScroller extends Component {
         // Check if the background has moved off the screen and reposition it to create the loop
         this.checkAndReposition(this.background1);
         this.checkAndReposition(this.background2);
+        console.log('Delta  - ' +deltaTime);
+        console.log('scrollSpeed  - ' + this.scrollSpeed);
     }
 
     scrollBackground(background: Node, deltaTime: number) {
