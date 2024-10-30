@@ -1,4 +1,4 @@
-import { _decorator, Component, director, AudioSource, game, Node,view,Animation, PhysicsSystem, Collider2D, Contact2DType, IPhysics2DContact, find, Prefab, input, Input, instantiate, macro, Vec3, EventKeyboard, KeyCode, Canvas, UITransform, NodePool, random,screen,sp, assert } from 'cc';
+import { _decorator, Component, director, AudioSource, game, Node,view,Animation, PhysicsSystem, Collider2D, Contact2DType, IPhysics2DContact, find, Prefab, input, Input, instantiate, macro, Vec3, EventKeyboard, KeyCode, Canvas, UITransform, NodePool, random,screen,sp, assert, EventHandler } from 'cc';
 import { PlayersJet } from './PlayersJet';
 import { Results } from './Results';
 import {switchScene} from "./SwitchScenePopupToMenu";
@@ -21,6 +21,9 @@ export class Game extends Component {
   cocosAnim_2: Animation | null = null;
   @property(Animation)
   player: Animation | null = null;
+
+  // @property(Animation)
+  // info: Animation | null = null;
   @property({
     type:Results,
     tooltip: 'Enemys destroyed'
@@ -63,7 +66,11 @@ export class Game extends Component {
   public apearEnemyFrequency:number = 3.0;
   public amountOfMassels:number;
   public switchScene:switchScene;
-
+//   callback (event: Event, customEventData: string) {
+//     this.playAnimationWithCallback("info_dialog", this.info,() => {
+        
+//     });
+// }
     playAnimationWithCallback(clipName: string, anim:Animation, callback: Function) {
       if (anim) {
           // Play the animation
@@ -254,6 +261,11 @@ onLoad() {
     }
 
 update(dt){
+  // const clickEventHandler = new EventHandler();
+  // clickEventHandler.target = this.node;
+  // clickEventHandler.component = 'example';
+  // clickEventHandler.handler = 'callback';
+  // clickEventHandler.customEventData = 'foobar';
   if (this.jet.bulletShouted === true && this.isButtonPressed === false) {      
           this.createPlayersBullet();
           this.isButtonPressed = true;

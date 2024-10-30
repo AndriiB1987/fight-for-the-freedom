@@ -32,6 +32,7 @@ export class switchScene extends Component {
         
         
         director.loadScene('Game');
+        director.resume();
 
 
     }
