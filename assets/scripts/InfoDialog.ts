@@ -7,8 +7,6 @@ import { Game } from './Game';
 export class Dialog extends Component {
     @property(Animation)
     info: Animation | null = null;
-    @property(Animation)
-    shadow: Animation | null = null;
 
     playAnimationWithCallback(clipName: string, anim:Animation, callback: Function) {
         if (anim) {
@@ -38,10 +36,9 @@ export class Dialog extends Component {
         clickEventHandler.component = 'Dialog';
         clickEventHandler.handler = 'callback';
         clickEventHandler.customEventData = 'foobar';
-        // director.preloadScene('Menu');
     }
 
-    callback (event: Event, customEventData: string) {
+    showDialog (event: Event, customEventData: string) {
         this.playAnimationWithCallback("info_dialog", this.info,() => {
             director.pause();
         });
@@ -53,8 +50,5 @@ export class Dialog extends Component {
     });
     director.resume();
    }
-   showShadow (event: Event, customEventData: string) {
-    this.playAnimationWithCallback("shadow", this.shadow,() => {
-    });
-}
+
 }
