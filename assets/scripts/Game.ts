@@ -1,8 +1,9 @@
-import { _decorator, Component, director, AudioSource, game, Node,view,Animation, PhysicsSystem, Collider2D, Contact2DType, IPhysics2DContact, find, Prefab, input, Input, instantiate, macro, Vec3, EventKeyboard, KeyCode, Canvas, UITransform, NodePool, random,screen,sp, assert, EventHandler } from 'cc';
+import { _decorator, Component, director, AudioSource, Node,Animation, Collider2D, Contact2DType, IPhysics2DContact,Prefab, instantiate, NodePool} from 'cc';
 import { PlayersJet } from './PlayersJet';
 import { Results } from './Results';
 import {switchScene} from "./SwitchScenePopupToMenu";
 import { PersistentNode } from './PersistentNode';
+import { playAnimationWithCallback } from './CocosAnimManag';
 const { ccclass, property } = _decorator;
 
 @ccclass('Game')
@@ -12,7 +13,6 @@ export class Game extends Component {
   @property(AudioSource)
   public audioSourcePlayerExpl: AudioSource | null = null;
   
-  // public sound: AudioControl = null;  // Drag and drop your AudioSource in the inspector
   @property(Animation)
   cocosAnim_0: Animation | null = null;
   @property(Animation)
@@ -22,8 +22,6 @@ export class Game extends Component {
   @property(Animation)
   player: Animation | null = null;
 
-  // @property(Animation)
-  // info: Animation | null = null;
   @property({
     type:Results,
     tooltip: 'Enemys destroyed'
@@ -66,29 +64,6 @@ export class Game extends Component {
   public apearEnemyFrequency:number = 3.0;
   public amountOfMassels:number;
   public switchScene:switchScene;
-//   callback (event: Event, customEventData: string) {
-//     this.playAnimationWithCallback("info_dialog", this.info,() => {
-        
-//     });
-// }
-    playAnimationWithCallback(clipName: string, anim:Animation, callback: Function) {
-      if (anim) {
-          // Play the animation
-          anim.play(clipName);
-
-          // Register the callback for the 'finished' event
-          anim.once(Animation.EventType.FINISHED, () => {
-              callback(); // Call the provided callback function
-          });
-      } else {
-          console.error('Animation component is missing');
-      }
-  }
-      // Callback function that will be executed when the animation finishes
-      onAnimationComplete() {
-        console.log('Animation completed!');
-        // Any additional logic when the animation finishes
-    }
 
 createPlayersBullet(){
   this.jet.addPool()
@@ -166,7 +141,7 @@ onBeginContactEnemy0(selfCollider: Collider2D, otherCollider: Collider2D, contac
  
   const animation = this.node.getComponent(Animation);
   if(this.colliderEnemy0){
-    this.playAnimationWithCallback('expl', this.cocosAnim_0, () => {
+    playAnimationWithCallback('expl', this.cocosAnim_0, () => {
       this.audioSourceEnemyExpl.play();
   
     });
@@ -177,14 +152,14 @@ onBeginContactEnemy0(selfCollider: Collider2D, otherCollider: Collider2D, contac
 onBeginContactEnemy1(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
   if(this.colliderEnemy1){
     this.audioSourceEnemyExpl.play();
-    this.playAnimationWithCallback('expl', this.cocosAnim_1, () => {});
+    playAnimationWithCallback('expl', this.cocosAnim_1, () => {});
     this.enemyHitSomething1 = true;   
   }
 }
 onBeginContactEnemy2(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
-  if(this.colliderPlayer){
+  if(this.colliderEnemy2){
     this.audioSourceEnemyExpl.play();
-    this.playAnimationWithCallback('expl', this.cocosAnim_2, () => {});
+    playAnimationWithCallback('expl', this.cocosAnim_2, () => {});
   this.enemyHitSomething2 = true;
 }
 
@@ -192,7 +167,7 @@ onBeginContactEnemy2(selfCollider: Collider2D, otherCollider: Collider2D, contac
 onBeginContactPlayer(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
   if(this.colliderPlayer){
     this.audioSourcePlayerExpl.play();
-    this.playAnimationWithCallback('expl', this.player, () => {});
+    playAnimationWithCallback('expl', this.player, () => {});
   this.playerHitSomething = true;
 }}
 enemyStruck() {
@@ -261,11 +236,6 @@ onLoad() {
     }
 
 update(dt){
-  // const clickEventHandler = new EventHandler();
-  // clickEventHandler.target = this.node;
-  // clickEventHandler.component = 'example';
-  // clickEventHandler.handler = 'callback';
-  // clickEventHandler.customEventData = 'foobar';
   if (this.jet.bulletShouted === true && this.isButtonPressed === false) {      
           this.createPlayersBullet();
           this.isButtonPressed = true;

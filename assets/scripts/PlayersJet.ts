@@ -1,6 +1,7 @@
 import { _decorator,Animation, Component, macro, Node, Vec3, director, EventKeyboard, Scene, Prefab, instantiate, Label,KeyCode, Input, input, Collider2D, Contact2DType, IPhysics2DContact, NodePool, UITransform, Canvas,screen, AudioSource, AudioClip  } from 'cc';
 import { Game } from './Game';
 import { AudioControl } from './AudioController';
+import { playAnimationWithCallback } from './CocosAnimManag';
 const { ccclass, property } = _decorator;
 @ccclass('PlayersJet')
 export class PlayersJet extends Component {
@@ -31,25 +32,6 @@ export class PlayersJet extends Component {
     public pool = new NodePool;
     public createBulletNode:Node = null;  
     public canvasWidht:number;
-
-    playAnimationWithCallback(clipName: string, anim:Animation, callback: Function) {
-        if (anim) {
-            // Play the animation
-            anim.play(clipName);
-  
-            // Register the callback for the 'finished' event
-            anim.once(Animation.EventType.FINISHED, () => {
-                callback(); // Call the provided callback function
-            });
-        } else {
-            console.error('Animation component is missing');
-        }
-    }
-        // Callback function that will be executed when the animation finishes
-        onAnimationComplete() {
-          console.log('Animation completed!');
-          // Any additional logic when the animation finishes
-      }
 
     getCanvaSize(){
         this.canvasWidht = this.node.parent.getComponent(UITransform).contentSize.width;
@@ -116,14 +98,14 @@ export class PlayersJet extends Component {
         switch(event.keyCode){
             case KeyCode.KEY_A:
                 this.moveLeft = 1;
-                this.playAnimationWithCallback('anim_OfPlayerLeft', this.animLeft, () => {
+                playAnimationWithCallback('anim_OfPlayerLeft', this.animLeft, () => {
                     // this.audioSourceEnemyExpl.play();
                 
                   });
                 break;
             case KeyCode.KEY_D:
                 this.moveRight = 1;
-                this.playAnimationWithCallback('anim_OfPlayerRight', this.animRight, () => {
+                playAnimationWithCallback('anim_OfPlayerRight', this.animRight, () => {
                     // this.audioSourceEnemyExpl.play();
                 
                   });
@@ -134,14 +116,14 @@ export class PlayersJet extends Component {
         switch(event.keyCode){
             case KeyCode.KEY_A:
                 this.moveLeft = 0;
-                this.playAnimationWithCallback('anim_OfPlayerStatic', this.animStatic, () => {
+                playAnimationWithCallback('anim_OfPlayerStatic', this.animStatic, () => {
                     // this.audioSourceEnemyExpl.play();
                 
                   });
                 break;
                 case KeyCode.KEY_D:
                 this.moveRight = 0;
-                this.playAnimationWithCallback('anim_OfPlayerStatic', this.animStatic, () => {
+                playAnimationWithCallback('anim_OfPlayerStatic', this.animStatic, () => {
                     // this.audioSourceEnemyExpl.play();
                 
                   });
