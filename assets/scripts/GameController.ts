@@ -10,20 +10,24 @@ export class GameController extends Component {
     private animationManager: AnimationManager = null;  // Reference to AnimationManager
     @property(Label)
     public label :Label;
+    private typingInterval: number;  // Change from NodeJS.Timeout to number
     // The typing effect function defined inside the class
     typeText(fullText: string, delay: number) {
         this.label.string = "";  // Clear the label before typing
-
+    
         let currentIndex = 0;
-
-        const typingInterval = setInterval(() => {
-            // Add one character at a time to the label
-            this.label.string += fullText[currentIndex];
-            currentIndex++;
-
-            // Stop the interval when the full text is typed out
-            if (currentIndex >= fullText.length) {
-                clearInterval(typingInterval);  // Stop typing
+        const length = fullText.length;
+    
+        // Clear any previous interval
+        clearInterval(this.typingInterval);
+    
+        // Define typing interval function
+        this.typingInterval = setInterval(() => {
+            if (currentIndex < length) {
+                this.label.string += fullText[currentIndex];
+                currentIndex++;
+            } else {
+                clearInterval(this.typingInterval);  // Stop typing when done
             }
         }, delay);  // Set the delay for typing
     }

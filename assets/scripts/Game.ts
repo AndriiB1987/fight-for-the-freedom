@@ -64,6 +64,7 @@ export class Game extends Component {
   public apearEnemyFrequency:number = 3.0;
   public amountOfMassels:number;
   public switchScene:switchScene;
+  public amountOfEnemys:number = 0;
 
 createPlayersBullet(){
   this.jet.addPool()
@@ -98,6 +99,8 @@ public spawnEnemy(enemy:Node) {
         enemy = this.createEnemy
         this.createEnemy0.active = true
         this.node.parent.addChild(enemy);
+        this.amount.spownedEnemyFunc();
+        console.log('PLUS --- ' + this.amount.spownedEnemy)
         this.createEnemy0.setSiblingIndex(2);
        }
        if(this.createEnemy.name =='enemy1'){
@@ -107,6 +110,8 @@ public spawnEnemy(enemy:Node) {
         enemy.setSiblingIndex(3); 
         this.createEnemy1.active = true
         this.node.parent.addChild(enemy);
+        this.amount.spownedEnemyFunc();
+        console.log('PLUS --- ' + this.amount.spownedEnemy)
         this.createEnemy1.setSiblingIndex(2);
        }
        if(this.createEnemy.name =='enemy2'){
@@ -115,6 +120,8 @@ public spawnEnemy(enemy:Node) {
         enemy = this.createEnemy
         this.createEnemy2.active = true
         this.node.parent.addChild(enemy);
+        this.amount.spownedEnemyFunc();
+        console.log('PLUS --- ' + this.amount.spownedEnemy)
         this.createEnemy2.setSiblingIndex(2);
        }
 
@@ -179,10 +186,13 @@ enemyStruck() {
           this.destroyPlayersBullet()
           this.enemyHitSomething0 = false;
           this.amount.scoreTotalEnemy();
-          setTimeout(() => {         
-            this.createEnemy0.destroy();
-            this.spawnEnemy(this.createEnemy0)
-        }, 300);
+          if(this.amount.spownedEnemy==0){
+            console.log('All enemy destroted')
+}else{             setTimeout(() => {
+
+  this.spawnEnemy(this.createEnemy0)
+
+}, 300);}
 
       }
       if (this.enemyHitSomething1 == true)
@@ -192,10 +202,12 @@ enemyStruck() {
           this.destroyPlayersBullet()
           this.enemyHitSomething1 = false;
           this.amount.scoreTotalEnemy();
-          setTimeout(() => {
-            this.createEnemy1.destroy();
-            this.spawnEnemy(this.createEnemy1)
-        }, 300);
+          if(this.amount.spownedEnemy==0){
+            console.log('All enemy destroted')
+}else{             setTimeout(() => {
+
+  this.spawnEnemy(this.createEnemy1)
+}, 300);}
         
       }  
         if (this.enemyHitSomething2 == true)
@@ -205,10 +217,16 @@ enemyStruck() {
             this.destroyPlayersBullet()
             this.enemyHitSomething2 = false;
             this.amount.scoreTotalEnemy();
-            setTimeout(() => {
-              this.createEnemy2.destroy();
-              this.spawnEnemy(this.createEnemy2)
-          }, 300);
+
+            if(this.amount.spownedEnemy==0){
+              console.log('All enemy destroted ')
+  }else{             setTimeout(() => {
+    // this.createEnemy2.destroy();
+    
+    this.spawnEnemy(this.createEnemy2)
+
+  }, 300);}
+
           }         
           if (this.playerHitSomething == true)
             {
@@ -226,8 +244,11 @@ enemyStruck() {
 
 start() {
   this.spawnEnemy(this.createEnemy0)
+  this.amount.spownedEnemyFunc();
   this.spawnEnemy(this.createEnemy1)
+  this.amount.spownedEnemyFunc();
   this.spawnEnemy(this.createEnemy2)
+  this.amount.spownedEnemyFunc();
   this.contactEnemy();
 }
 onLoad() {
@@ -235,7 +256,9 @@ onLoad() {
   this.initEnemy()
     }
 
+
 update(dt){
+  
   if (this.jet.bulletShouted === true && this.isButtonPressed === false) {      
           this.createPlayersBullet();
           this.isButtonPressed = true;
@@ -244,16 +267,18 @@ update(dt){
           // Reset the button press state when the button is released
           this.isButtonPressed = false;
       }
-      if (this.amount.missilesShouted <= 0) {
+      if (this.amount.missilesShouted < 0) {
         PersistentNode.instance.amount.missilesShouted = this.amount.missilesShouted;
-        director.loadScene('Dialog');
+          director.loadScene('Dialog');
     }
     if (this.amount.enemyPlaneCrasched >= 20) {
       PersistentNode.instance.amount.enemyPlaneCrasched = this.amount.enemyPlaneCrasched;
       setTimeout(() => {
         director.loadScene('Dialog');
-    }, 300);
+    },300);
     }
       this.enemyStruck()
     }
+
+      
   }
