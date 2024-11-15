@@ -1,4 +1,4 @@
-import { _decorator,Animation, Component, macro, Node, Vec3, director, EventKeyboard, Scene, Prefab, instantiate, Label,KeyCode, Input, input, Collider2D, Contact2DType, IPhysics2DContact, NodePool, UITransform, Canvas,screen, AudioSource, AudioClip  } from 'cc';
+import { _decorator,Animation, Component, macro, Node, Vec3, director, EventKeyboard, Scene, Prefab, instantiate, Label,KeyCode, Input, input, Collider2D, Contact2DType, IPhysics2DContact, NodePool, UITransform, Canvas,screen, AudioSource, AudioClip, Button  } from 'cc';
 import { Game } from './Game';
 import { AudioControl } from './AudioController';
 import { playAnimationWithCallback } from './CocosAnimManag';
@@ -32,6 +32,14 @@ export class PlayersJet extends Component {
     public pool = new NodePool;
     public createBulletNode:Node = null;  
     public canvasWidht:number;
+    @property(Button)
+    public leftButton: Button = null;
+
+    @property(Button)
+    public rightButton: Button = null;
+
+    @property(Button)
+    public shootButton: Button = null;
 
     getCanvaSize(){
         this.canvasWidht = this.node.parent.getComponent(UITransform).contentSize.width;
@@ -40,7 +48,48 @@ export class PlayersJet extends Component {
 
         this.getCanvaSize();
         console.log("!!!!!! canvs in PLayerS  - "+ this.canvasWidht)
+        this.leftButton.node.on(Node.EventType.TOUCH_START, this.onMoveLeft, this);
+        this.leftButton.node.on(Node.EventType.TOUCH_END, this.onStopMoveLeft, this);
+
+        this.rightButton.node.on(Node.EventType.TOUCH_START, this.onMoveRight, this);
+        this.rightButton.node.on(Node.EventType.TOUCH_END, this.onStopMoveRight, this);
+
+        this.shootButton.node.on(Node.EventType.TOUCH_START, this.onShoot, this);
+        this.shootButton.node.on(Node.EventType.TOUCH_END, this.onStopShoot, this);
       }
+          // Movement and shooting methods for buttons
+    onMoveLeft() {
+        this.moveLeft = 1;
+        playAnimationWithCallback('anim_OfPlayerLeft', this.animLeft, () => {});
+    }
+
+    onStopMoveLeft() {
+        this.moveLeft = 0;
+        playAnimationWithCallback('anim_OfPlayerStatic', this.animStatic, () => {});
+    }
+
+    onMoveRight() {
+        this.moveRight = 1;
+        playAnimationWithCallback('anim_OfPlayerRight', this.animRight, () => {});
+    }
+
+    onStopMoveRight() {
+        this.moveRight = 0;
+        playAnimationWithCallback('anim_OfPlayerStatic', this.animStatic, () => {});
+    }
+
+    onShoot() {
+        this.bulletShouted = true;
+        if (this.audioSource) {
+            this.audioSource.playOneShot(this.clip, 1);
+        } else {
+            console.error('AudioSource is not assigned!');
+        }
+    }
+
+    onStopShoot() {
+        this.bulletShouted = false;
+    }
     initPool(){
         let initCount = 150;
         for (let i = 0; i < initCount; i++) {
