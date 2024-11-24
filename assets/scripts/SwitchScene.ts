@@ -1,10 +1,28 @@
-import {  _decorator, Component, Event, Node, Button, EventHandler,director, game } from 'cc';
+import {  _decorator, Component, Event, Node, Button, EventHandler,director, game,AudioSource,AudioClip } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('SwitchScene')
 export class switchScene extends Component {
-
+    @property(AudioSource)
+    public audioSourceSoundBg: AudioSource | null = null;
+    @property(AudioClip)
+    public clip: AudioClip = null!   
+    // onShoot() {
+    //     if (this.audioSourceSoundBg) {
+    //         this.audioSourceSoundBg.playOneShot(this.clip, 1);
+    //     } else {
+    //         console.error('AudioSource is not assigned!');
+    //     }
+    // }
     onLoad () {
+        // if (!this.audioSourceSoundBg) {
+        //     // Try to get the AudioSource component attached to the same node
+        //     this.audioSourceSoundBg = this.getComponent(AudioSource);
+        // }
+        // if (!this.audioSourceSoundBg) {
+        //     console.error('AudioSource component is missing or not assigned');
+        // } 
+        
         const clickEventHandler = new EventHandler();
         // This node is the node to which your event handler code component belongs
         clickEventHandler.target = this.node;
@@ -20,7 +38,7 @@ export class switchScene extends Component {
         // document.addEventListener('keydown', this.onInteraction.bind(this));
 
         
-
+        
         director.preloadScene('Game');
     }
 
@@ -33,15 +51,16 @@ export class switchScene extends Component {
         
         director.loadScene('Game');
         director.resume();
-
-
     }
 
 
     start() {
-        // this.jet.reset();
+        // this.node.on(Node.EventType.TOUCH_START, this.onShoot, this);
+        // this.node.on(Node.EventType.TOUCH_END, this.onStopShoot, this);
     }
-
+    // onStopShoot() {
+    //     // this.bulletShouted = false;
+    // }
     update(dt) {
         
     }

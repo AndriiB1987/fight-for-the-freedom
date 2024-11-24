@@ -1,4 +1,4 @@
-import { _decorator, Component, Label } from 'cc';
+import { _decorator, Component, Label,AudioSource, AudioClip } from 'cc';
 import  AnimationManager  from './AnimationManager';  // Import the AnimationManager
 import { PersistentNode } from './PersistentNode';
 
@@ -11,6 +11,10 @@ export class GameController extends Component {
     @property(Label)
     public label :Label;
     private typingInterval: number;  // Change from NodeJS.Timeout to number
+    @property(AudioSource)
+    public audioSource: AudioSource | null = null;
+    @property(AudioClip)
+    public clip: AudioClip = null!   
     // The typing effect function defined inside the class
     typeText(fullText: string, delay: number) {
         this.label.string = "";  // Clear the label before typing
