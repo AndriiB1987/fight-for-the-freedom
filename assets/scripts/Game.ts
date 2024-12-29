@@ -254,6 +254,7 @@ start() {
 onLoad() {
   director.preloadScene('Dialog');
   this.initEnemy()
+  this.amount.resetScores();
     }
 
 
